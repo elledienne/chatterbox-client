@@ -6,7 +6,7 @@ body {
 }
 
 #main, #chats {
-    width: 650px;
+    width: 750px;
     margin: auto;
     text-align: left;
     background: white;
@@ -54,7 +54,7 @@ form {
 
 form input[type=text] {
     margin-right: 10px;
-    width: 70%;
+    width: 68%;
     font-size: 12px;
     padding: 5px;
 }
@@ -89,4 +89,12 @@ form input[type=text] {
 
 select {
     width: 150px;
+}
+
+.setNewRoom {
+    display: none;
+}
+
+#newRoomName {
+    width: 140px;
 }

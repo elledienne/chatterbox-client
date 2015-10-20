@@ -17,8 +17,13 @@
       <form id="send">
         <input type="text" id="message" placeholder="Type a cool post here">
         <select id="roomSelect">
-          <option value="new" id="createNewRoom" selected>Create new room...</option>
+          <option value="new" id="createNewRoom">Create new room...</option>
+          <option value="all" selected>All</option>
         </select>
+        <span class="setNewRoom">
+          <input type="text" id="newRoomName" placeholder="Type room name...">
+          <button class="setButton">Set</button>
+        </span>
         <button class="submit" type="submit" >Post Message!</button>
       </form>
     </div>

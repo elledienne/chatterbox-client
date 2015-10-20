@@ -83,12 +83,24 @@ $( document ).ready(function(){
   });
   $('#send').on('submit', function(event){
     event.preventDefault();
+    console.log('aaa');
     app.handleSubmit($(this));
   });
+  // $('#send').on('click', '.setButton', function(event){
+  //   event.preventDefault();
+  //   //app.handleSubmit($(this));
+  //   console.log($('#newRoomName').val());
+  //   app.addRoom($(this).val())
+  // });
   $('select').change(function(event){
     var selectedRoom = $('select').find(":selected");
-    if (selectedRoomId.id()) { //create new
-    } else if { //filter messages and work on selectedRoomId.value()
+    console.log(selectedRoom.attr('id'));
+    if (selectedRoom.attr('id')) {
+      //create new
+      $('select').hide();
+      $('.setNewRoom').show();
+    } else { 
+    //filter messages and work on selectedRoomId.value()
     }
   });
   setInterval(app.fetch, 1000);
