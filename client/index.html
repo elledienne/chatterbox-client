@@ -18,13 +18,13 @@
         <input type="text" id="message" placeholder="Type a cool post here">
         <select id="roomSelect">
           <option value="new" id="createNewRoom">Create new room...</option>
-          <option value="all" selected>All</option>
+          <option value="all" id="allRooms" selected>All</option>
         </select>
         <span class="setNewRoom">
           <input type="text" id="newRoomName" placeholder="Type room name...">
           <button class="setButton" type="button">Set</button>
         </span>
-        <button class="submit" type="submit" >Post Message!</button>
+        <button class="submit" type="submit" disabled="true">Post Message!</button>
       </form>
     </div>
     <div id="chats"></div>

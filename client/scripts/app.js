@@ -2,6 +2,7 @@
 var app = {
   lastMessage: null,
   rooms: {},
+  currentSelectedRoom: null,
   init: function() {
   },
   server: 'https://api.parse.com/1/classes/chatterbox',
@@ -43,23 +44,40 @@ var app = {
       }
     })
     app.lastMessage = $chatsToPrepend.children().first().attr('id') || app.lastMessage;
-    $('#chats').prepend($chatsToPrepend.children());
+    if ($chatsToPrepend.children().length > 0) {
+      $('#chats').prepend($chatsToPrepend);
+    }
   },
   addMessage: function(message) {
-    app.addRoom(message.roomname);
-    var $chat = $('<div class = "chat" id = ' + _.escape(message.objectId) + '></div>');
-    $chat.append('<span class = "post">' + _.escape(message.text) + '</span>');
-    $chat.append('<span class = "username">' + _.escape(message.username) + '</span>');
-    return $chat;
+    var room = _.escape(message.roomname);
+    app.addRoom(room);
+    var messageText = _.escape(message.text);
+    var userName = _.escape(message.username);
+    if(messageText && (app.currentSelectedRoom === null || app.currentSelectedRoom === room)) {
+      var $chat = $('<div class = "chat" id = ' + _.escape(message.objectId) + '></div>');
+      $chat.append('<span class = "post">' + messageText + '</span>');
+      $chat.append('<span class = "username">' + userName + '</span>');
+      $chat.append('<span class = "roomname">Room: ' + room + '</span>');
+      return $chat;
+    }
+    return;
   },
   clearMessages: function() {
     $('#chats').children().remove();
   },
+  resetMessages: function() {
+    app.clearMessages();
+    app.lastMessage = null;
+    app.fetch();
+  },
   addRoom: function(room, selected) {
     selected = selected || '';
-    room = _.escape(room);
     if(app.rooms[room]){
-      app.rooms[room]++;
+      if(selected) {
+        $('option[value = "' + room +'"]').prop('selected', true);
+      } else {
+        app.rooms[room]++;
+      }
     } else if(room.replace(/\s/g, '').length){
       app.rooms[room] = 1;
       $('#roomSelect').append('<option value="' + room + '" ' + selected + '>' + room + '</option>');
@@ -84,32 +102,37 @@ $( document ).ready(function(){
   });
   $('#send').on('submit', function(event){
     event.preventDefault();
-    console.log('aaa');
+    //console.log('aaa');
     app.handleSubmit($(this));
+    $(this).find('#message')[0].value = '';
   });
   $('#send').on('click', '.setButton', function() {
-    app.addRoom($(this).siblings()[0].value, 'selected');
+    var roomName = _.escape($(this).siblings()[0].value)
+    app.addRoom(roomName, 'selected');
+    app.currentSelectedRoom = roomName;
     $('select').show();
     $('.setNewRoom').hide();
+    $('button.submit').prop('disabled', false);
+    app.resetMessages();
   });
-  // $('#send').on('click', '.setButton', function(event){
-  //   event.preventDefault();
-  //   //app.handleSubmit($(this));
-  //   console.log($('#newRoomName').val());
-  //   app.addRoom($(this).val())
-  // });
   $('select').change(function(event){
     var selectedRoom = $('select').find(":selected");
-    // console.log(selectedRoom.attr('id'));
-    if (selectedRoom.attr('id')) {
-      //create new
+    if (selectedRoom.attr('id') === 'createNewRoom') {
+      $('button.submit').prop('disabled', true);
       $('select').hide();
       $('.setNewRoom').show();
-    } else { 
-    //filter messages and work on selectedRoomId.value()
-    }
+    } else {
+      if(selectedRoom.attr('id') === 'allRooms') {
+        $('button.submit').prop('disabled', true);
+        app.currentSelectedRoom = null;
+      } else {
+        $('button.submit').prop('disabled', false);
+        app.currentSelectedRoom = selectedRoom.attr('value');
+      }
+      app.resetMessages();
+    } 
   });
-  setInterval(app.fetch, 1000);
+  setInterval(app.fetch, 2000);
 });
 
 app.fetch();
