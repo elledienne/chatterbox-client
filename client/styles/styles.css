@@ -73,6 +73,10 @@ form input[type=text] {
     display: block;
 }
 
+.chat.friend .post {
+    font-weight: 800;
+}
+
 .chat:hover {
     background-color: #ddd;
 }

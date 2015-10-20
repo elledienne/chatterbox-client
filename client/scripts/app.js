@@ -3,9 +3,9 @@ var app = {
   lastMessage: null,
   rooms: {},
   currentSelectedRoom: null,
-  init: function() {
-  },
+  friends: {},
   server: 'https://api.parse.com/1/classes/chatterbox',
+  init: function() {},
   send: function(message) {
     $.ajax({
       url: app.server,
@@ -49,14 +49,18 @@ var app = {
     }
   },
   addMessage: function(message) {
+    console.log(message);
     var room = _.escape(message.roomname);
     app.addRoom(room);
     var messageText = _.escape(message.text);
     var userName = _.escape(message.username);
     if(messageText && (app.currentSelectedRoom === null || app.currentSelectedRoom === room)) {
       var $chat = $('<div class = "chat" id = ' + _.escape(message.objectId) + '></div>');
+      if (app.friends[userName]) {
+        $chat.addClass('friend');
+      }
       $chat.append('<span class = "post">' + messageText + '</span>');
-      $chat.append('<span class = "username">' + userName + '</span>');
+      $chat.append('<span class = "username ' + userName + ' ">' + userName + '</span>');
       $chat.append('<span class = "roomname">Room: ' + room + '</span>');
       return $chat;
     }
@@ -84,7 +88,13 @@ var app = {
     }
   },
   addFriend: function(username) {
-    console.log('adding new friend: ' + username.textContent);
+    username = username.textContent;
+    //console.log('adding new friend: ' + username);
+    if (!app.friends[username]) {
+      app.friends[username] = 1;
+    }
+    $('span.username.' + username).parent().addClass('friend');
+    //console.dir(app.friends);
   },
   handleSubmit: function(post) {
     var message = {
@@ -130,7 +140,7 @@ $( document ).ready(function(){
         app.currentSelectedRoom = selectedRoom.attr('value');
       }
       app.resetMessages();
-    } 
+    }
   });
   setInterval(app.fetch, 2000);
 });
