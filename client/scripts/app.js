@@ -61,7 +61,7 @@ var app = {
       app.rooms[room]++;
     } else if(room.replace(/\s/g, '').length){
       app.rooms[room] = 1;
-      $('#roomSelect').append('<option value="' + room + '" selected>' + room + '</option>');
+      $('#roomSelect').append('<option value="' + room + '">' + room + '</option>');
     }
   },
   addFriend: function(username) {
@@ -84,7 +84,13 @@ $( document ).ready(function(){
   $('#send').on('submit', function(event){
     event.preventDefault();
     app.handleSubmit($(this));
-  })
+  });
+  $('select').change(function(event){
+    var selectedRoom = $('select').find(":selected");
+    if (selectedRoomId.id()) { //create new
+    } else if { //filter messages and work on selectedRoomId.value()
+    }
+  });
   setInterval(app.fetch, 1000);
 });
 
