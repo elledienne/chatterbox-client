@@ -1,6 +1,7 @@
 // YOUR CODE HERE:
 var app = {
   lastMessage: null,
+  rooms: {},
   init: function() {
   },
   server: 'https://api.parse.com/1/classes/chatterbox',
@@ -45,6 +46,7 @@ var app = {
     $('#chats').prepend($chatsToPrepend.children());
   },
   addMessage: function(message) {
+    app.addRoom(message.roomname);
     var $chat = $('<div class = "chat" id = ' + _.escape(message.objectId) + '></div>');
     $chat.append('<span class = "post">' + _.escape(message.text) + '</span>');
     $chat.append('<span class = "username">' + _.escape(message.username) + '</span>');
@@ -54,13 +56,24 @@ var app = {
     $('#chats').children().remove();
   },
   addRoom: function(room) {
-    $('#roomSelect').append('<option value="' + room + '" selected>' + room + '</option>');
+    room = _.escape(room);
+    if(app.rooms[room]){
+      app.rooms[room]++;
+    } else if(room.replace(/\s/g, '').length){
+      app.rooms[room] = 1;
+      $('#roomSelect').append('<option value="' + room + '" selected>' + room + '</option>');
+    }
   },
   addFriend: function(username) {
     console.log('adding new friend: ' + username.textContent);
   },
   handleSubmit: function(post) {
-    console.log(post);
+    var message = {
+      text: post.find('#message')[0].value,
+      roomname: post.find('#roomSelect')[0].value,
+      username: decodeURIComponent(window.location.search.slice(window.location.search.indexOf('=') + 1))
+    }
+    app.send(message);
   }
 };
 
@@ -68,8 +81,9 @@ $( document ).ready(function(){
   $('#chats').on('click', '.username', function(){
     app.addFriend(this);
   });
-  $('.submit').on('submit', function(e){
-    app.handleSubmit(this);
+  $('#send').on('submit', function(event){
+    event.preventDefault();
+    app.handleSubmit($(this));
   })
   setInterval(app.fetch, 1000);
 });
