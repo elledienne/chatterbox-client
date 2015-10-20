@@ -49,7 +49,6 @@ var app = {
     }
   },
   addMessage: function(message) {
-    console.log(message);
     var room = _.escape(message.roomname);
     app.addRoom(room);
     var messageText = _.escape(message.text);
