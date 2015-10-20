@@ -55,13 +55,14 @@ var app = {
   clearMessages: function() {
     $('#chats').children().remove();
   },
-  addRoom: function(room) {
+  addRoom: function(room, selected) {
+    selected = selected || '';
     room = _.escape(room);
     if(app.rooms[room]){
       app.rooms[room]++;
     } else if(room.replace(/\s/g, '').length){
       app.rooms[room] = 1;
-      $('#roomSelect').append('<option value="' + room + '">' + room + '</option>');
+      $('#roomSelect').append('<option value="' + room + '" ' + selected + '>' + room + '</option>');
     }
   },
   addFriend: function(username) {
@@ -86,6 +87,11 @@ $( document ).ready(function(){
     console.log('aaa');
     app.handleSubmit($(this));
   });
+  $('#send').on('click', '.setButton', function() {
+    app.addRoom($(this).siblings()[0].value, 'selected');
+    $('select').show();
+    $('.setNewRoom').hide();
+  });
   // $('#send').on('click', '.setButton', function(event){
   //   event.preventDefault();
   //   //app.handleSubmit($(this));
@@ -94,7 +100,7 @@ $( document ).ready(function(){
   // });
   $('select').change(function(event){
     var selectedRoom = $('select').find(":selected");
-    console.log(selectedRoom.attr('id'));
+    // console.log(selectedRoom.attr('id'));
     if (selectedRoom.attr('id')) {
       //create new
       $('select').hide();
